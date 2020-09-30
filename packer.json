@@ -1,0 +1,37 @@
+{
+    "variables": {
+      "aws_access_key": "AKIAS3MBRPGFHDJSCZME",
+      "aws_secret_key": "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"
+    },
+   
+    "builders": [{
+      "type": "amazon-ebs",
+      "region": "us-east-1",
+      "source_ami": "ami-00514a528eadbc95b",
+      "instance_type": "t2.micro",
+      "ssh_username": "ec2-user",
+      "ami_name": "DevOpsClass-Build-{{isotime | clean_resource_name}}",
+      "vpc_id": "vpc-00fcf06ed333ec9c8",
+      "subnet_id": "subnet-0c861e2dde2ecfa0e",
+      "tags": {
+        "Name": "DevOpsClass-Build-{{isotime | clean_resource_name}}"
+      }
+
+    }],
+    "provisioners": [{
+      "type": "shell",
+      "inline": [
+        "sleep 30",
+        "sudo yum update -y",
+        "sudo yum install nginx -y",
+        "sudo yum install git -y",
+        "sudo git clone https://github.com/mavrick202/webhooktesting.git",
+        "sudo rm -rf /usr/share/nginx/html/index.html",
+        "sudo cp webhooktesting/index.html /usr/share/nginx/html/index.html",
+        "sudo cp webhooktesting/style.css /usr/share/nginx/html/style.css",
+        "sudo cp webhooktesting/scorekeeper.js /usr/share/nginx/html/scorekeeper.js",
+        "sudo service nginx start",
+        "sudo chkconfig nginx on"
+        ]
+    }]
+  }
